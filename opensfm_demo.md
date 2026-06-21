@@ -1,13 +1,13 @@
-# OpenSfM 3D reconstruction — one-sequence demo
+# OpenSfM 3D reconstruction - one-sequence demo
 
 This is the heavy 3D layer: a real photogrammetric reconstruction (sparse +
 dense point cloud, optional mesh) of a portion of Beirut from the Mapillary
 street-view images. We use [OpenSfM](https://github.com/mapillary/OpenSfM),
-which is what Mapillary itself uses internally — so the image format and
+which is what Mapillary itself uses internally - so the image format and
 metadata (GPS, heading, altitude) are already in the right shape.
 
 The lightweight 3D layer (`view_3d.py`) is enough for camera-pose maps. Use
-this OpenSfM path when you need actual building geometry — e.g., to estimate
+this OpenSfM path when you need actual building geometry - e.g., to estimate
 volume of rubble at the port, or to compare façade depth pre/post explosion.
 
 ## Why a single sequence
@@ -17,7 +17,7 @@ Each sequence is a continuous capture path (one camera moving), which is the
 unit OpenSfM reconstructs best. A 50–300 image sequence reconstructs in 20–90
 min on CPU and produces a usable point cloud of one block / one street.
 
-Pick a sequence that has good coverage near your area of interest — e.g.
+Pick a sequence that has good coverage near your area of interest - e.g.
 near the port for the Aug 2020 explosion analysis.
 
 ## Choose a sequence
@@ -102,10 +102,10 @@ For panoramic sequences OpenSfM handles equirectangular projection natively
 
 After `bin/opensfm_run_all` finishes, you'll have:
 
-- `opensfm_work/reconstruction.json` — camera poses + sparse 3D points
-- `opensfm_work/undistorted/depthmaps/` — per-image depth maps
-- `opensfm_work/undistorted/depthmaps/merged.ply` — fused dense point cloud
-- `opensfm_work/undistorted/openmvs/scene_dense_mesh.ply` — textured mesh
+- `opensfm_work/reconstruction.json` - camera poses + sparse 3D points
+- `opensfm_work/undistorted/depthmaps/` - per-image depth maps
+- `opensfm_work/undistorted/depthmaps/merged.ply` - fused dense point cloud
+- `opensfm_work/undistorted/openmvs/scene_dense_mesh.ply` - textured mesh
 
 Open `merged.ply` in [MeshLab](https://www.meshlab.net) or
 [CloudCompare](https://www.cloudcompare.org). For a Python-only viewer:
@@ -134,5 +134,5 @@ post = df[df["captured_at_dt"] >= EXPLOSION]
 ```
 
 Run reconstruction once on each side, then compare point clouds in
-CloudCompare ("M3C2 distance" plugin) — surfaces that moved or disappeared
+CloudCompare ("M3C2 distance" plugin) - surfaces that moved or disappeared
 flag damage.
