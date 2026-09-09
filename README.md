@@ -62,11 +62,55 @@ IMG_DIR = Path(os.environ.get('IMG_DIR_OVERRIDE', 'images_2048')).resolve()
 - Override anywhere: `export IMG_DIR_OVERRIDE=/path/to/my/images` (or the PowerShell
   equivalent) before launching the kernel.
 
-## Mapillary token
+## Tokens (both mandatory, both hidden input)
 
-Get a free token (READ scope) at https://www.mapillary.com/dashboard/developers.
-The notebook prompts for it in a **hidden input field** on first run - never typed
-in plaintext, never saved to disk.
+The setup cell prompts for two tokens on first run. Both are read via `getpass`
+(hidden input), cached in the kernel session, and never written to disk.
+
+- **Mapillary token** (READ scope). Get one at
+  https://www.mapillary.com/dashboard/developers. Used by Step 0 to fetch image
+  metadata.
+- **HuggingFace token** (READ scope). Get one at
+  https://huggingface.co/settings/tokens. Used by Steps 2 and 2b when
+  downloading `open_clip` and SegFormer weights. Anonymous HF downloads get
+  rate-limited on shared IPs (Colab, university networks, VPNs), which silently
+  stalls the run for hours - so the token is mandatory even for public models.
+
+To skip the prompt in scripted runs, export them first:
+
+```bash
+export MAPILLARY_TOKEN='MLY|...'
+export HF_TOKEN='hf_...'
+```
+
+## Persistence and skip-if-already-there
+
+The setup cell picks the right base directory automatically and re-uses whatever
+is already on disk. Nothing is downloaded, embedded, or segmented twice.
+
+| Environment | Base dir | Survives runtime restart? |
+|---|---|---|
+| Local machine | current dir | yes (it's your disk) |
+| Colab / Kaggle | `MyDrive/beirut_project/` (Drive auto-mounted) | yes (persisted to Drive) |
+| Override anywhere | `export BEIRUT_BASE_DIR=/some/path` | yes |
+
+On startup the setup cell prints exactly what is already cached
+(`metadata`, `embeddings`, `segmentation`, JPEG count) and each heavy step
+short-circuits on the same check:
+
+- **Step 0** (metadata): skipped entirely if `beirut_metadata.csv.gz` and
+  `embeddings.npy` both exist (re-fetching would drift IDs vs. the embeddings).
+- **Step 1** (JPEGs): only downloads IDs not already in `images_2048/`.
+- **Step 2** (CLIP embeddings): only embeds IDs not already in
+  `embeddings_ids.txt`; saves after every batch.
+- **Step 2b** (SegFormer): only segments IDs not already in
+  `segmentation_scores.csv`; saves after every batch.
+- **Model weights** (CLIP ~300 MB, SegFormer ~14 MB): HF and torch caches are
+  redirected into the base dir, so on Colab they land on Drive and download
+  once ever.
+
+First full run on Colab T4: ~1 h. Every subsequent run: seconds to a few minutes
+(only the classifier / plots / browser cells re-execute).
 
 ## Running the notebook
 
