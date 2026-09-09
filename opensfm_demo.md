@@ -14,7 +14,7 @@ volume of rubble at the port, or to compare façade depth pre/post explosion.
 
 Full-city SfM over 31k images would take days on CPU and tens of GB of disk.
 Each sequence is a continuous capture path (one camera moving), which is the
-unit OpenSfM reconstructs best. A 50–300 image sequence reconstructs in 20–90
+unit OpenSfM reconstructs best. A 50-300 image sequence reconstructs in 20-90
 min on CPU and produces a usable point cloud of one block / one street.
 
 Pick a sequence that has good coverage near your area of interest - e.g.
@@ -32,7 +32,7 @@ mask = (df["lat"].between(PORT_LAT - 0.005, PORT_LAT + 0.005) &
 print(df[mask].groupby("sequence").size().sort_values(ascending=False).head(10))
 ```
 
-Pick the sequence id with 80–300 images and copy those JPEGs into a working
+Pick the sequence id with 80-300 images and copy those JPEGs into a working
 folder (one folder per reconstruction).
 
 ```python
@@ -121,7 +121,7 @@ o3d.visualization.draw_geometries([pcd])
 To stitch multiple sequences (e.g., reconstruct a neighborhood):
 1. Reconstruct each sequence independently.
 2. Use OpenSfM's `merge` command or align them in CloudCompare via GPS.
-3. For deep-learning–accelerated reconstruction, swap to
+3. For deep-learning-accelerated reconstruction, swap to
    [hloc + COLMAP](https://github.com/cvg/Hierarchical-Localization) or
    [3D Gaussian Splatting](https://github.com/graphdeco-inria/gaussian-splatting).
 
