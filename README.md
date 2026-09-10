@@ -28,6 +28,56 @@ street-level imagery for Beirut, Lebanon (2014-2024) and produces:
 Everything auto-saves to `outputs/` (fig_NN.png for plots, individual CSVs and
 TXTs for tables) so a runtime disconnect never costs you the results.
 
+## Showcase
+
+Real outputs from a full run of the notebook on 43,611 Mapillary street-view images of Beirut.
+
+### Damage / suspicious buildings - CLIP + logistic regression
+
+Sequence-aware 5-fold GroupKFold cross-validation on the CLIP-embedding classifier.
+
+![Confusion matrix (5-fold OOF, group by sequence). AUC=0.901, KS=0.666](docs/screenshots/01_confusion_matrix.png)
+
+Top-12 images ranked most damage-like by the classifier. Every one shows a real
+Beirut building with visible damage, rubble, or post-blast state.
+
+![Top-12 suspicious buildings](docs/screenshots/02_top12_damaged.png)
+
+Geographic distribution: all 43,611 image poses (blue) with the top-500
+damage-like frames overlaid in red. The cluster north-east of the port matches
+the 4 August 2020 blast zone.
+
+![Geographic distribution of suspicious images](docs/screenshots/03_damage_map.png)
+
+### Greenery analysis - SegFormer-Cityscapes
+
+Per-image green fraction (vegetation + terrain) rendered as a city-wide map,
+with the top-15 greenest spots circled in black and the Beirut port marked with
+a yellow star.
+
+![Beirut greenery map (n=43,611 images, SegFormer-Cityscapes)](docs/screenshots/04_greenery_map.png)
+
+Year-over-year mean and median of `green_frac` across the whole city.
+
+![Beirut green cover over time (per-image mean)](docs/screenshots/05_green_cover_time.png)
+
+`green_frac` distribution inside 1 km of the port, split at 4 August 2020 -
+post-blast frames end up greener on average because rubble lots have been
+partially re-vegetated.
+
+![Green cover inside 1 km of Beirut port: pre vs post 2020-08-04](docs/screenshots/06_pre_post_port_histogram.png)
+
+### 3D dataset browser (Step 7 - the final dashboard)
+
+The last cell of the notebook produces a **self-contained HTML page**
+(`outputs/beirut_browser.html`) that combines a 2D Leaflet map, a 3D Plotly
+scene, a sidebar with live filters (text search on `image_id`/`sequence`, date
+range, damage-score slider, green-fraction slider, panoramas-only toggle), a
+right-side thumbnail gallery of the current filter, and an "Export filtered
+-> CSV" button. It ships as one HTML + one JSON file next to `images_2048/`
+and opens with a double-click - no server, no install. See
+[Which dataset browser to use](#which-dataset-browser-to-use) below.
+
 ## Files
 
 | File | Purpose |
